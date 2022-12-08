@@ -3,7 +3,7 @@ import json
 
 
 
-url = "https://api-football-v1.p.rapidapi.com/v3/players/topscorers"
+url = "https://t/v3/players/topscorers"
 
 querystring = {"league":"39","season":"2022t"}
 
@@ -17,11 +17,9 @@ response = requests.request("GET", url, headers=headers, params=querystring)
 #récuperer que les 4000 premier caractères de la réponse et les afficher en string
 #print(response.text)
 #mettre la réponse dans un fichier json
-def get_json(response):
-    return response
 
-json_string = json.dumps(response)
-print(response)
-
-with open('data.json', 'w') as f:
-    f.write(json_string)
+with open('data.json') as f:
+    data = json.load(f)
+    #afficher tous les nom des joueurs  qui sont dans le fichier json soit response.player.firstname et response.player.lastname
+    for player in data:
+        print(player[firstname], player[lastname])
