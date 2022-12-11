@@ -23,3 +23,4 @@ with open('data.json') as f:
     #afficher tous les nom des joueurs  qui sont dans le fichier json soit response.player.firstname et response.player.lastname
     for player in data:
         print(player[firstname], player[lastname])
+
