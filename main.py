@@ -2,14 +2,21 @@ import discord
 import os
 import io
 import requests
-import PIL
 import json
 import asyncio
 import re
 from discord import app_commands
-from PIL import Image
 import time
 import datetime
+from datetime import timedelta
+
+from deep_translator import GoogleTranslator
+
+
+
+
+
+
 
 url = "https://api-football-v1.p.rapidapi.com/v3/timezone"
 
@@ -127,17 +134,22 @@ async def on_message(message):
             return
         elif user_message.lower() == "!quote":
             response4 = requests.get("https://animechan.vercel.app/api/random")
+            response4_quote = response4.json()["quote"]
+            response4_quote_translate = GoogleTranslator(source='auto', target='fr').translate(response4_quote)
+            # outpout -> Ich möchte diesen Text übersetzen
             #envoyer response2.message dans le channel
             await message.channel.send(response4.json()["character"])
-            await message.channel.send("said one day in" )
+            await message.channel.send("à dit un jour dans " )
             await message.channel.send(response4.json()["anime"])
-            await message.channel.send(response4.json()["quote"])
+            await message.channel.send(response4_quote_translate)
             print(response4.json())          
             return
         elif user_message.lower() == "!onlyquote":
             response5 = requests.get("https://animechan.vercel.app/api/random")
+            response5_quote = response5.json()["quote"]
+            response5_quote_translate = GoogleTranslator(source='auto', target='fr').translate(response5_quote)
             #envoyer response2.message dans le channel
-            await message.channel.send(response5.json()["quote"])
+            await message.channel.send(response5_quote_translate)
             return     
         elif user_message.lower() == "!anime":
             #await message.channel.send(response_anime.json())
@@ -167,14 +179,16 @@ async def foot( interaction: discord.Interaction):
 async def project( interaction: discord.Interaction, project: str , day: int):
      user = interaction.user.mention
      date = datetime.date.today()
-     date_fin = date + timdelta(days=day)
+     date_fin = date + timedelta(days=day)
      print(time.time())     #username = interaction.user.name
      print (datetime.date.today())
      await interaction.response.send_message(f"😆{user} commence un nouveau projet qu'il a appélé  {project} souhaitons lui bonne chance il en a pour {day} jours")     
      #sauvergarder tous les projets dans un fichier
-     with open("project.txt", "a") as f: 
-         f.write(f"{project} {day} {user}")
+     with open("project.txt", "a+") as f: 
+         int = f.readlines()
+         f.write(f"{int} {project} {day} {user}")
          f.write(f"{date} {date_fin} \n")
          f.close()
 
-client.run("Token")
+               
+client.run("TOKEN")
