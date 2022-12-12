@@ -25,8 +25,6 @@ headers = {
 	"X-RapidAPI-Host": "api-football-v1.p.rapidapi.com"
 }
 response = requests.request("GET", url, headers=headers)
-#récuperer que les 4000 premier caractères de la réponse et les afficher en string
-#print(response.text[0:4000])
 
 
 
@@ -39,7 +37,6 @@ headers_anime = {
 
 response_anime = requests.request("GET", url_anime, headers=headers)
 
-#print(response_anime.text)
 
 
 
@@ -120,12 +117,6 @@ async def on_message(message):
             await message.channel.send("il est temps d'aller rompishpish")
             await message.channel.send("http://gavinaperano.com/Vid/thegoat.mp4")
             return
-        #à chaque fois que le message.author ==adia#3344 envoie un message dans le channel "général" le bot envoie un message dans le channel "général" et afficher la photo etp.jpeg qui est dans le dossier du bot
-        #elif username == "adia" and message.channel.name == "langue-de-molière":
-        #    await message.channel.send(f" j'ai d'abord rappelé à {username} qu'il n'a jamais été un grand joueur de foot")
-        #  await message.channel.send(file=discord.File('./etp.jpeg'))
-        #  return
-        #envoyer une photo de chat random à chaque fois qu'on fait !chat
         elif user_message.lower() == "!dog":
             response2 = requests.get("https://dog.ceo/api/breeds/image/random")
             #envoyer response2.message dans le channel
@@ -148,13 +139,11 @@ async def on_message(message):
             response5 = requests.get("https://animechan.vercel.app/api/random")
             response5_quote = response5.json()["quote"]
             response5_quote_translate = GoogleTranslator(source='auto', target='fr').translate(response5_quote)
-            #envoyer response2.message dans le channel
             await message.channel.send(response5_quote_translate)
             return     
         elif user_message.lower() == "!anime":
             #await message.channel.send(response_anime.json())
             response_ani = requests.get("https://pic.re/image")
-            #envoyer le body de la requête dans le channel
             await message.channel.send(response_ani.headers["image_source"])   
  
             return
@@ -162,11 +151,13 @@ async def on_message(message):
             #envoyer response2.message dans le channel
             await message.channel.send("https://cataas.com/cat")
             return
-        #si la personne écrit !bye éteindre le bot
         elif user_message.lower() == "!bye" and username == "Gavin APERANO":
             await message.channel.send("bye bye")
             await client.close()
             return
+        elif user_message.lower() == "!anime":
+            response_nsfw = requests.get("https://nekos.life/api/v2/img/lewd")
+            
                     
   
 
@@ -175,15 +166,20 @@ async def on_message(message):
 async def foot( interaction: discord.Interaction):
     await interaction.response.send_message(response.text[0:1000])  
     
+@tree.command(name="anime" , description="type(sfw) category (waifu,bully,cuddle, cry) ou type (nsfw) (blowjob ,neko , trap, waifu)")
+async def anime( interaction: discord.Interaction , type: str , category: str):
+    url_anime_command =  f"https://api.waifu.pics/{type}/{category}"
+    get_anime = requests.get(url_anime_command)
+    await interaction.response.send_message(get_anime.json()["url"])      
+    
 @tree.command(name="project" , description="le nombre de jours où tu penses l'avoir fini et nom du projet")
 async def project( interaction: discord.Interaction, project: str , day: int):
      user = interaction.user.mention
      date = datetime.date.today()
      date_fin = date + timedelta(days=day)
-     print(time.time())     #username = interaction.user.name
+     print(time.time())    
      print (datetime.date.today())
      await interaction.response.send_message(f"😆{user} commence un nouveau projet qu'il a appélé  {project} souhaitons lui bonne chance il en a pour {day} jours")     
-     #sauvergarder tous les projets dans un fichier
      with open("project.txt", "a+") as f: 
          int = f.readlines()
          f.write(f"{int} {project} {day} {user}")
@@ -191,4 +187,4 @@ async def project( interaction: discord.Interaction, project: str , day: int):
          f.close()
 
                
-client.run("TOKEN")
+client.run("token")
