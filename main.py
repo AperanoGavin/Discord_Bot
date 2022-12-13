@@ -3,17 +3,24 @@ import os
 import io
 import requests
 import json
+import xmltodict
 import asyncio
 import re
 from discord import app_commands
 import time
 import datetime
 from datetime import timedelta
-
+import mysql.connector as sql
 from deep_translator import GoogleTranslator
 
 
 
+mydb = sql.connect(
+    host = "sql7.freemysqlhosting.net",
+    user = "sql7584311",
+    password = "kPsBAhZcwS",
+     database= "sql7584311"
+)
 
 
 
@@ -170,21 +177,59 @@ async def foot( interaction: discord.Interaction):
 async def anime( interaction: discord.Interaction , type: str , category: str):
     url_anime_command =  f"https://api.waifu.pics/{type}/{category}"
     get_anime = requests.get(url_anime_command)
-    await interaction.response.send_message(get_anime.json()["url"])      
+    await interaction.response.send_message(get_anime.json()["url"]) 
+    
+@tree.command(name = "idnba")
+async def id_nba( interaction: discord.Interaction , name: str ):
+    url_id_nbaplayer = f"https://www.balldontlie.io/api/v1/players?search={name}"
+    get_idnbaplayer = requests.get(url_id_nbaplayer)
+    get_reel_id = get_idnbaplayer.json()["data"][0]["id"]
+    await interaction.response.send_message(get_reel_id)      
+
+
+
+@tree.command(name="nba" , description= " info about nba player")    
+async def nba( interaction: discord.Interaction , id: int ):
+    url_nba_command =  f"https://www.balldontlie.io/api/v1/players/{id}"
+    get_nba= requests.get(url_nba_command)
+    get_nba_name = get_nba.json()["first_name"]
+    get_nba_position = get_nba.json()["position"]
+    get_nba_team = get_nba.json()["team"]["full_name"]
+    get_nba_weight = get_nba.json()["weight_pounds"]
+
+    embed = discord.Embed(title =" nba players stats " , description= "all of this player" , color= discord.Colour.random())    
+    embed.add_field(name = "Name",value= get_nba_name)
+    embed.add_field(name ="Position", value = get_nba_position)
+    embed.add_field(name="Team",value = get_nba_team)
+    embed.add_field(name="Weight", value = get_nba_weight)
+    await interaction.response.send_message( embed = embed)      
     
 @tree.command(name="project" , description="le nombre de jours où tu penses l'avoir fini et nom du projet")
 async def project( interaction: discord.Interaction, project: str , day: int):
      user = interaction.user.mention
      date = datetime.date.today()
      date_fin = date + timedelta(days=day)
+     print (mydb)
      print(time.time())    
      print (datetime.date.today())
-     await interaction.response.send_message(f"😆{user} commence un nouveau projet qu'il a appélé  {project} souhaitons lui bonne chance il en a pour {day} jours")     
+     await interaction.response.send_message(f"😆{user} commence un nouveau projet qu'il a appélé  {project} souhaitons lui bonne chance il en a pour {day} jours")  
+    
+     cursor = mydb.cursor()
+     query = """
+            INSERT INTO project
+            (id_discord, title , date_start_at, date_end_at)
+            VALUES (?, ? , ? , ?)
+        """
+     values = [(interaction.user.id, project, date, date_fin)]   
+     cursor.executemany(query, values)
+     
      with open("project.txt", "a+") as f: 
          int = f.readlines()
          f.write(f"{int} {project} {day} {user}")
          f.write(f"{date} {date_fin} \n")
          f.close()
 
+
+
                
-client.run("token")
+client.run("Token")
