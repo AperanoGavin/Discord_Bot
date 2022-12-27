@@ -12,19 +12,21 @@ import datetime
 from datetime import timedelta
 import mysql.connector as sql
 from deep_translator import GoogleTranslator
+import tweepy
+import config
+
+
+#mysq
+
+
+#twitter
+client_twitter = tweepy.Client(bearer_token=config.BEARER_TWITTER)
+
+id_twitter = "793961648"
 
 
 
-mydb = sql.connect(
-    host = "sql7.freemysqlhosting.net",
-    user = "sql7584311",
-    password = "kPsBAhZcwS",
-     database= "sql7584311"
-)
-
-
-
-
+#foot api
 url = "https://api-football-v1.p.rapidapi.com/v3/timezone"
 
 headers = {
@@ -34,7 +36,7 @@ headers = {
 response = requests.request("GET", url, headers=headers)
 
 
-
+#anime api
 url_anime = "https://any-anime.p.rapidapi.com/anime/img"
 
 headers_anime = {
@@ -179,7 +181,7 @@ async def anime( interaction: discord.Interaction , type: str , category: str):
     get_anime = requests.get(url_anime_command)
     await interaction.response.send_message(get_anime.json()["url"]) 
     
-@tree.command(name = "idnba")
+@tree.command(name = "idnba" , description="il t'aide à trouvé l'id d'un joueur")
 async def id_nba( interaction: discord.Interaction , name: str ):
     url_id_nbaplayer = f"https://www.balldontlie.io/api/v1/players?search={name}"
     get_idnbaplayer = requests.get(url_id_nbaplayer)
@@ -229,7 +231,16 @@ async def project( interaction: discord.Interaction, project: str , day: int):
          f.write(f"{date} {date_fin} \n")
          f.close()
 
-
+@tree.command(name="rer_a" , description="last tweet update about RER A")
+async def rer_a( interaction: discord.Interaction):
+    response_RER_A = client_twitter.get_users_tweets(id_twitter,  tweet_fields=['context_annotations','created_at','geo'] )
+    print(response_RER_A)
+    #renvoyer un nouveau   await interaction.response.send_message(response_RER_A) si la longueur est supérieur à 1000
+    await interaction.response.send_message(response_RER_A[0][1])
+    channel = client.get_channel(1051980157784698950)
+    last_message = await channel.history(author__name='Gaveen_suii#4489').flatten()
+    print(last_message)
+    
 
                
-client.run("Token")
+client.run("TOKEN")
