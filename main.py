@@ -243,4 +243,4 @@ async def rer_a( interaction: discord.Interaction):
     
 
                
-client.run("TOKEN")
+client.run("Token")
