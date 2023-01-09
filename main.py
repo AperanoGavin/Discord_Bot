@@ -14,7 +14,10 @@ import mysql.connector as sql
 from deep_translator import GoogleTranslator
 import tweepy
 import config
-
+from dotenv import load_dotenv
+load_dotenv()
+import os
+token = os.getenv("TOKEN")
 
 #mysq
 
@@ -242,5 +245,12 @@ async def rer_a( interaction: discord.Interaction):
     print(last_message)
     
 
+@tree.command(name="get_profil" , description="get  profil of user ")
+async def get_profil( interaction: discord.Interaction, name: str):
+      server = client.get_guild(1041807074943844412)
+      user = discord.utils.get(server.members, name=f"{name}")
+      avatar_url = user.display_avatar
+      await interaction.response.send_message( avatar_url)
+   
                
-client.run("Token")
+client.run(token)
