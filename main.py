@@ -86,7 +86,6 @@ async def on_message(message):
     user_message = str(message.content)
     channel = str(message.channel.name)
     print(f'{username} : {user_message} ({channel})')
-    
     if message.author == client.user:
         return
     
@@ -251,6 +250,14 @@ async def get_profil( interaction: discord.Interaction, name: str):
       user = discord.utils.get(server.members, name=f"{name}")
       avatar_url = user.display_avatar
       await interaction.response.send_message( avatar_url)
-   
+
+@tree.command(name="get_banner" , description="get  banner of user ")
+async def get_profil( interaction: discord.Interaction, name: str):
+      server = client.get_guild(1041807074943844412)
+      user = discord.utils.get(server.members, name=f"{name}")
+      avatar_url = user.banner
+      print(avatar_url)
+      await interaction.response.send_message( avatar_url)
+ 
                
 client.run(token)
