@@ -1,5 +1,6 @@
 import discord
 import os
+import random
 import io
 import requests
 import json
@@ -65,16 +66,33 @@ GUILD = os.getenv('1047812022789734480')
         
 @client.event
 async def on_ready():
+    #recuperer le jour d'aujourd'hui
+    today = datetime.date.today()
+    #verified si on est mardi 
+ 
     synced = await tree.sync()
     for guild in client.guilds:
         if guild.name == GUILD:
             break
     print(
-        
+        today.weekday(),
         f'{client.user} is connected to the following guild:\n'
         f'{guild.name}(id: {guild.id})'
     )
- 
+    if today.weekday() == 1:
+        await client.get_channel(1062420141352177764).send("c'est mardi @everyone n'oublier pas l'association gacha à 20h")
+    if today.weekday() == 4:
+        await client.get_channel(1062420141352177764).send("c'est vendredi @everyone n'oublier pas l'association fifa à 20h")  
+        
+    #si il y'a un nouveau message dans le channel 1028053906405732382
+    #on recupere le message et on le print
+    #1028053906405732382
+    channel = client.get_channel(1041807075505864826)
+    msg = await client.wait_for("message", check=lambda message: message.channel == channel)
+    channel_update= client.get_channel(1062420141352177764)
+    await channel_update.send(f'nouveau message de {msg.author}!')
+    
+       
     
          
          
@@ -258,6 +276,17 @@ async def get_profil( interaction: discord.Interaction, name: str):
       avatar_url = user.banner
       print(avatar_url)
       await interaction.response.send_message( avatar_url)
+      
+      
+      
+    
+@tree.command(name="meme" , description="get meme media")   
+async def meme( interaction: discord.Interaction ):
+    url = requests.get("http://gavinaperano.com:8000/workflow/public/index.php")
+    n = random.choice(range(0, 7))
+    url_meme = url.json()[n]["description"]["url"]
+    await interaction.response.send_message(url_meme)  
+    
  
                
 client.run(token)
