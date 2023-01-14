@@ -87,7 +87,7 @@ async def on_ready():
     #si il y'a un nouveau message dans le channel 1028053906405732382
     #on recupere le message et on le print
     #1028053906405732382
-    channel = client.get_channel(1041807075505864826)
+    channel = client.get_channel(1050070825040093186)
     msg = await client.wait_for("message", check=lambda message: message.channel == channel)
     channel_update= client.get_channel(1062420141352177764)
     await channel_update.send(f'nouveau message de {msg.author}!')
